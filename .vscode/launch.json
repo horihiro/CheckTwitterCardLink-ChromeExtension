@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug on Chrome",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}",
+      "url": "https://twitter.com/home",
+      "runtimeArgs": [
+        "--load-extension=${workspaceFolder}",
+        "--enable-extensions-developer-mode"
+      ],
+      "preLaunchTask": "build"
+    },
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Chrome",
+      "port": 9222,
+      "url": "https://twitter.com/home",
+      "preLaunchTask": "Launch Chrome",      
+    }
+  ]
+}

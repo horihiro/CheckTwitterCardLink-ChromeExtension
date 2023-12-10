@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "Launch Chrome",
+      "windows": {
+        "command": "${env:PROGRAMFILES}\\Google\\Chrome\\Application\\chrome.exe\"",
+        "args": [
+          "--remote-debugging-port=9222",
+          "--load-extension=${workspaceFolder}", // this is the path to the extension folder
+          "--enable-extensions-developer-mode", 
+          // "https://example.com"
+        ],
+        "options": {
+          "env": {
+            "CHROME_DEVELOPER_TOOLS": true
+          }
+        }
+      },
+    },
+    {
+      "type": "shell",
+      "label": "build",
+      "command": "npm run build:dev",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

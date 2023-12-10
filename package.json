@@ -1,0 +1,27 @@
+{
+  "name": "twitter-card-link-checker",
+  "version": "0.1.0",
+  "description": "This Chrome extension checks if Twitter Cards link to the domain shown in the Twitter Cards.",
+  "scripts": {
+    "clean": "node -e \"require('fs-extra').removeSync('./dist')\"",
+    "build:mkdir": "node -e \"const fs = require('fs-extra'); fs.ensureDirSync('./dist/popup/js'); fs.ensureDirSync('./dist/content'); fs.ensureDirSync('./dist/background');\"",
+    "build": "npm run clean && npm run build:mkdir && npm run build:background && npm run build:content && npm run build:popup && npm run build:copyFiles",
+    "build:dev": "npm run clean && npm run build:mkdir && npm run build:dev:background && npm run build:dev:content && npm run build:dev:popup && npm run build:copyFiles",
+    "build:background": "esbuild ./src/background/background.ts --bundle --minify --outfile=./dist/background/service-worker.js",
+    "build:content": "esbuild ./src/content/contentScript.ts --bundle --minify --outfile=./dist/content/main.js ",
+    "build:popup": " esbuild ./src/popup/popup.ts --bundle --minify --outfile=./dist/popup/js/bundle.js ",
+    "build:dev:background": "esbuild ./src/background/background.ts --bundle --sourcemap --outfile=./dist/background/service-worker.js",
+    "build:dev:content": "esbuild ./src/content/contentScript.ts --bundle --sourcemap --outfile=./dist/content/main.js ",
+    "build:dev:popup": " esbuild ./src/popup/popup.ts --bundle --sourcemap --outfile=./dist/popup/js/bundle.js ",
+    "build:copyFiles": "node -e \"const fs = require('fs-extra'); fs.copySync('./public', './dist/popup');\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.254",
+    "esbuild": "^0.19.5",
+    "fs-extra": "^11.1.1",
+    "typescript": "^5.2.2"
+  },
+  "author": "horihiro",
+  "license": "ISC"
+}
