@@ -46,8 +46,6 @@ import { Card } from "../types/card";
   };
   const observer = new MutationObserver((mutations) => {
     if (mutations.filter((mutation/* , i, array */) => mutation.addedNodes.length > 0).length === 0) return;
-    // const toBeValidated = document.querySelectorAll('*[data-testid="card.wrapper"]:not([data-validated])');
-    // const toBeValidated = document.querySelectorAll('*[data-testid="card.wrapper"]:not([data-validated]), :has(>[data-testid="tweetText"]) + div > div:not([data-validated])');
     const toBeValidated = document.querySelectorAll(['twitter.com', 'x.com'].includes(location.hostname)
        ? SELECTOR_CARD_TIMELINE
        : SELECTOR_CARD_EMBEDDED
