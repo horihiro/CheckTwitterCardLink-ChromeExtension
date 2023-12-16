@@ -6,7 +6,7 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener(async (message) => {
     const fetchOptions = {
       redirect: 'follow',
-      credentials: 'omit',
+      credentials: 'same-origin',
       cache: 'no-cache',
       mode: 'cors'
     };
@@ -23,11 +23,14 @@ chrome.runtime.onConnect.addListener((port) => {
         return '';
       })(message.url);
       const response = await fetch(targetUrl, Object.assign(fetchOptions, { method: 'HEAD' }) as RequestInit);
-      const redirectTo = await (async (response) => {
-        const body = await response.text();
+      await response.text();
+      const { status, url } = response;
+      const redirectTo = new URL((status >= 300 && status < 400) ? url : await (async () => {
+        const response = await fetch(targetUrl, Object.assign(fetchOptions, { method: 'GET' }) as RequestInit);
+        await response.text();
         const { status, url } = response;
-        return new URL((status >= 200 && status < 300) ? url : targetUrl).hostname;
-      })(response);
+        return (status >= 200 && status < 300) ? url : targetUrl;
+      })()).hostname;
 
       message.redirectTo = redirectTo;
     } catch (error) {
