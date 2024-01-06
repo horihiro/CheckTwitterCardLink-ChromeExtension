@@ -1,6 +1,6 @@
 {
   "name": "twitter-card-link-checker",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "This Chrome extension checks if Twitter Cards link to the domain shown in the Twitter Cards.",
   "scripts": {
     "clean": "node -e \"require('fs-extra').removeSync('./dist')\"",

@@ -1,6 +1,6 @@
 'use strict';
 
-import { CONNECTION_NAME, SELECTOR_CARD_EMBEDDED, SELECTOR_CARD_TIMELINE } from "../common/const";
+import { CONNECTION_NAME, SELECTOR_CARD_EMBEDDED, SELECTOR_CARD_TIMELINE, REGEXP_DOMAIN } from "../common/const";
 import { Card } from "../types/card";
 
 (async () => {
@@ -55,7 +55,10 @@ import { Card } from "../types/card";
       const linkTo = cardElement.querySelector('a')?.href;
       if (!linkTo) return;
       const linkedHost = new URL(linkTo).hostname;
-      const shownAs = cardElement.querySelector('a span')?.textContent || '';
+      const shownAsInCard = cardElement.querySelector('a span')?.textContent || '';
+      const shownAs =
+          shownAsInCard.match(REGEXP_DOMAIN)?.[0]
+       || Array.from(cardElement?.nextSibling?.childNodes || []).filter(t => t.nodeName === "#text" && t.nodeValue?.match(REGEXP_DOMAIN)?.[0])[0]?.nodeValue || '';
       if (isSubdomainOf(linkedHost, shownAs) /* linkedHost.length === linkedHost.indexOf(shownAs) + shownAs.length */) {
         cardElement.setAttribute('data-validated', 'true');
         return;
@@ -63,7 +66,7 @@ import { Card } from "../types/card";
       const card: Card = {
         linkTo,
         shownAs,
-        element: cardElement
+        element: cardElement.parentNode as Element
       }
       const id = cardElement.id || cardElement.getAttribute('aria-labelledby');
       if (!id) return;
