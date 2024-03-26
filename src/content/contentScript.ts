@@ -19,12 +19,14 @@ import { Card } from "../types/card";
     card.redirectTo = message.redirectTo;
     if (isSubdomainOf(card.redirectTo, card.shownAs)) {
       card.element.setAttribute('data-validated', 'true');
+      card.element.removeAttribute('title');
       card.element.querySelectorAll('a').forEach((a) => {
         a.onclick = null;
       });
       return;
     }
     card.element.setAttribute('data-validated', 'false');
+    card.element.setAttribute('title', `This card links to \`${card.redirectTo}\`, not \`${card.shownAs}\`!`);
     card.element.querySelectorAll('a').forEach((a) => {
       a.onclick = (e) => {
         if (window.confirm(`Are you sure you want to go to '${card.redirectTo}', not '${card.shownAs}'?`)) return true;
@@ -56,22 +58,23 @@ import { Card } from "../types/card";
       if (!linkTo) return;
       const linkedHost = new URL(linkTo).hostname;
       const shownAsInCard = cardElement.querySelector('a span')?.textContent || '';
+      const element = cardElement.parentNode as Element;
       const shownAs =
           Array.from(cardElement?.nextSibling?.childNodes || []).filter(t => t.nodeName === "#text" && t.nodeValue?.match(REGEXP_DOMAIN)?.[0])[0]?.nodeValue || shownAsInCard.match(REGEXP_DOMAIN)?.[0] || '';
       if (isSubdomainOf(linkedHost, shownAs) /* linkedHost.length === linkedHost.indexOf(shownAs) + shownAs.length */) {
-        cardElement.setAttribute('data-validated', 'true');
+        element.setAttribute('data-validated', 'true');
         return;
       }
       const card: Card = {
         linkTo,
         shownAs,
-        element: cardElement.parentNode as Element
+        element
       }
       const id = cardElement.id || cardElement.getAttribute('aria-labelledby');
       if (!id) return;
       cardMap.set(id, card);
-      cardElement.setAttribute('data-validated', 'validating');
-      console.log(cardElement.getAttribute('aria-labelledby'));
+      element.setAttribute('data-validated', 'validating');
+      element.setAttribute('title', `checking if \`${linkTo}\` links to \`${shownAs}\`...`);
       card.element.querySelectorAll('a').forEach((a) => {
         a.onclick = (e) => {
           if (window.confirm(`Validating a link in this card. Are you sure you want to open this?`)) return true;
