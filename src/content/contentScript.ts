@@ -57,8 +57,7 @@ import { Card } from "../types/card";
       const linkedHost = new URL(linkTo).hostname;
       const shownAsInCard = cardElement.querySelector('a span')?.textContent || '';
       const shownAs =
-          shownAsInCard.match(REGEXP_DOMAIN)?.[0]
-       || Array.from(cardElement?.nextSibling?.childNodes || []).filter(t => t.nodeName === "#text" && t.nodeValue?.match(REGEXP_DOMAIN)?.[0])[0]?.nodeValue || '';
+          Array.from(cardElement?.nextSibling?.childNodes || []).filter(t => t.nodeName === "#text" && t.nodeValue?.match(REGEXP_DOMAIN)?.[0])[0]?.nodeValue || shownAsInCard.match(REGEXP_DOMAIN)?.[0] || '';
       if (isSubdomainOf(linkedHost, shownAs) /* linkedHost.length === linkedHost.indexOf(shownAs) + shownAs.length */) {
         cardElement.setAttribute('data-validated', 'true');
         return;
